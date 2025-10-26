@@ -275,7 +275,7 @@ Age-Group           % Distribution      Count
 ## 👤 Author
 
 **[Your Name]**
-- GitHub: [@yourusername](https://github.com/HarshAshGangar)
+- GitHub: https://github.com/HarshAshGangar
 - Email: harshgan18@gmail.com
 
 ---
