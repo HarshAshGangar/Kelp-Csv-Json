@@ -12,17 +12,12 @@ class UploadController {
       const absolutePath = path.resolve(filePath);
 
       console.log(`\n📂 Reading CSV file from: ${absolutePath}`);
-
-      // Parse CSV file
       console.log('⚙️  Parsing CSV file...');
       const records = CSVParser.parseCSVFile(absolutePath);
       console.log(`✓ Parsed ${records.length} records from CSV`);
-
-      // Insert into database
       console.log('⚙️  Inserting records into database...');
       const insertedCount = await UserService.insertUsers(records);
 
-      // Calculate and print age distribution
       console.log('⚙️  Calculating age distribution...');
       const distribution = await UserService.calculateAgeDistribution();
 

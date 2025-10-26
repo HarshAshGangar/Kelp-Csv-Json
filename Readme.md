@@ -195,7 +195,7 @@ await query(`INSERT INTO users VALUES ${placeholders.join(', ')}`, values);
 
 ### Generate Test CSV
 ```bash
-node generate-bulk-csv.js 10000
+node test.js 10000
 ```
 
 ### Run Tests

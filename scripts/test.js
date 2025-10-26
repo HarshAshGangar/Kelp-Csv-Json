@@ -6,7 +6,6 @@ const path = require('path');
  * This will create realistic test data by duplicating and modifying base records
  */
 
-// Sample base data (we'll multiply this)
 const firstNames = ['Rohit', 'Priya', 'Amit', 'Sneha', 'Rajesh', 'Anita', 'Vikas', 'Kavita', 'Suresh', 'Deepa',
                     'Rahul', 'Pooja', 'Vikram', 'Neha', 'Arjun', 'Simran', 'Karan', 'Riya', 'Aditya', 'Divya'];
 
@@ -34,8 +33,6 @@ const genders = ['male', 'female'];
 function generateRecord(index) {
   const firstName = firstNames[index % firstNames.length];
   const lastName = lastNames[Math.floor(index / firstNames.length) % lastNames.length];
-  
-  // Distribute ages across different ranges for realistic distribution
   let age;
   const ageGroup = index % 10;
   if (ageGroup < 1) age = Math.floor(Math.random() * 8) + 12;        // <20: 10%
@@ -66,13 +63,11 @@ function generateCSV(numRecords, outputPath) {
   
   const startTime = Date.now();
   
-  // Create header
+  
   const headers = ['name.firstName', 'name.lastName', 'age', 'address.line1', 'address.line2', 'address.city', 'address.state', 'gender'];
   
-  // Write header first
   fs.writeFileSync(outputPath, headers.join(',') + '\n');
   
-  // Generate records in batches
   const batchSize = 1000;
   let csvBatch = '';
   
@@ -81,12 +76,10 @@ function generateCSV(numRecords, outputPath) {
     const row = headers.map(header => record[header]).join(',');
     csvBatch += row + '\n';
     
-    // Write batch to file
     if ((i + 1) % batchSize === 0 || i === numRecords - 1) {
       fs.appendFileSync(outputPath, csvBatch);
       csvBatch = '';
       
-      // Progress
       const progress = ((i + 1) / numRecords * 100).toFixed(1);
       process.stdout.write(`\r   Progress: ${progress}% (${(i + 1).toLocaleString()} / ${numRecords.toLocaleString()} records)`);
     }
@@ -108,7 +101,6 @@ function generateCSV(numRecords, outputPath) {
  * Main execution
  */
 function main() {
-  // Get number of records from command line argument
   const args = process.argv.slice(2);
   
   if (args.length === 0) {
@@ -141,21 +133,17 @@ function main() {
   console.log('📊 BULK CSV GENERATOR');
   console.log('='.repeat(70));
   
-  // Create uploads directory if it doesn't exist
   const uploadsDir = path.join(process.cwd(), 'uploads');
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
   }
   
-  // Generate filename with timestamp
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
   const filename = `bulk_${numRecords}_${timestamp}.csv`;
   const outputPath = path.join(uploadsDir, filename);
   
-  // Generate CSV
   generateCSV(numRecords, outputPath);
   
-  // Show next steps
   console.log('📝 NEXT STEPS:');
   console.log('='.repeat(70));
   console.log('1. Update your .env file:');
@@ -170,5 +158,4 @@ function main() {
   console.log('='.repeat(70) + '\n');
 }
 
-// Run the script
 main();

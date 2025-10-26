@@ -12,12 +12,11 @@ class UserService {
       await client.query('BEGIN');
       
       let insertedCount = 0;
-      const batchSize = 1000; // Insert 1000 records at a time
+      const batchSize = 1000;
       
       for (let i = 0; i < records.length; i += batchSize) {
         const batch = records.slice(i, i + batchSize);
         
-        // Build bulk insert query
         const values = [];
         const placeholders = [];
         let paramCount = 1;
@@ -32,7 +31,6 @@ class UserService {
           paramCount += 4;
         }
         
-        // Execute bulk insert
         await client.query(
           `INSERT INTO users (name, age, address, additional_info) 
            VALUES ${placeholders.join(', ')}`,
@@ -68,22 +66,18 @@ class UserService {
       throw new Error('Missing mandatory field: age');
     }
 
-    // Combine firstName and lastName
     const name = `${record.name.firstName} ${record.name.lastName}`;
     
-    // Extract age
     const age = parseInt(record.age);
     if (isNaN(age)) {
       throw new Error('Age must be a valid number');
     }
 
-    // Extract address fields
     let address = null;
     if (record.address) {
       address = JSON.stringify(record.address);
     }
 
-    // Extract additional info (everything except name, age, address)
     const additionalInfo = {};
     for (const key in record) {
       if (key !== 'name' && key !== 'age' && key !== 'address') {
@@ -120,20 +114,18 @@ class UserService {
         'greater_than_60': 0
       };
 
-      // Count users in each age group (FIXED boundaries)
       ages.forEach(age => {
         if (age < 20) {
           distribution.less_than_20++;
-        } else if (age >= 20 && age < 40) {  // 20-39
+        } else if (age >= 20 && age < 40) {  
           distribution['20_to_40']++;
-        } else if (age >= 40 && age <= 60) {  // 40-60
+        } else if (age >= 40 && age <= 60) {  
           distribution['40_to_60']++;
         } else {  // > 60
           distribution.greater_than_60++;
         }
       });
 
-      // Calculate percentages
       const total = ages.length;
       const percentages = {
         'less_than_20': ((distribution.less_than_20 / total) * 100).toFixed(2),
@@ -142,7 +134,6 @@ class UserService {
         'greater_than_60': ((distribution.greater_than_60 / total) * 100).toFixed(2)
       };
 
-      // Print report
       this.printAgeDistributionReport(percentages, distribution, total);
       
       return percentages;

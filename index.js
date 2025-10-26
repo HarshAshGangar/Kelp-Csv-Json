@@ -6,7 +6,6 @@ require('dotenv').config();
 const app = express();
 app.use(express.json());
 
-// Database connection
 const pool = new Pool({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -19,7 +18,6 @@ pool.on('connect', () => {
   console.log('✓ Database connected');
 });
 
-// CSV Parser
 function parseCSV(content) {
   const lines = content.split('\n').filter(line => line.trim());
   const headers = lines[0].split(',').map(h => h.trim());
@@ -49,7 +47,6 @@ function parseCSV(content) {
   return records;
 }
 
-// Upload CSV endpoint
 app.post('/api/upload', async (req, res) => {
   try {
     console.log('\n📂 Reading CSV file...');
@@ -83,7 +80,6 @@ app.post('/api/upload', async (req, res) => {
     
     console.log(`✓ Inserted ${count} records`);
     
-    // Calculate age distribution
     console.log('⚙️  Calculating age distribution...');
     const result = await pool.query('SELECT age FROM users');
     const ages = result.rows.map(row => row.age);
@@ -110,7 +106,6 @@ app.post('/api/upload', async (req, res) => {
       'greater_than_60': ((dist.greater_than_60 / total) * 100).toFixed(2)
     };
 
-    // Print age distribution report on console
     console.log('\n' + '='.repeat(60));
     console.log('AGE DISTRIBUTION REPORT');
     console.log('='.repeat(60));
@@ -136,7 +131,6 @@ app.post('/api/upload', async (req, res) => {
   }
 });
 
-// Get all users
 app.get('/api/users', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM users ORDER BY id');
@@ -150,7 +144,6 @@ app.get('/api/users', async (req, res) => {
   }
 });
 
-// Get age distribution
 app.get('/api/age-distribution', async (req, res) => {
   try {
     const result = await pool.query('SELECT age FROM users');
@@ -182,7 +175,6 @@ app.get('/api/age-distribution', async (req, res) => {
       'greater_than_60': ((dist.greater_than_60 / total) * 100).toFixed(2)
     };
 
-    // Print report on console
     console.log('\n' + '='.repeat(60));
     console.log('AGE DISTRIBUTION REPORT');
     console.log('='.repeat(60));
@@ -206,7 +198,6 @@ app.get('/api/age-distribution', async (req, res) => {
   }
 });
 
-// Delete all users
 app.delete('/api/users', async (req, res) => {
   try {
     await pool.query('TRUNCATE TABLE users RESTART IDENTITY');

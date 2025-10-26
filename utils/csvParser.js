@@ -23,11 +23,9 @@ class CSVParser {
       throw new Error('CSV file is empty');
     }
 
-    // First line is headers
     const headers = this.parseCSVLine(lines[0]);
     const records = [];
 
-    // Parse each data line
     for (let i = 1; i < lines.length; i++) {
       const values = this.parseCSVLine(lines[i]);
       
@@ -108,22 +106,18 @@ class CSVParser {
    * Convert string value to appropriate type
    */
   static convertValue(value) {
-    // Empty value
     if (value === '' || value === null || value === undefined) {
       return null;
     }
 
-    // Try to convert to number
     const num = Number(value);
     if (!isNaN(num) && value !== '') {
       return num;
     }
 
-    // Boolean
     if (value.toLowerCase() === 'true') return true;
     if (value.toLowerCase() === 'false') return false;
 
-    // Return as string
     return value;
   }
 }
